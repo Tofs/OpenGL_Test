@@ -8,6 +8,7 @@
 struct render_object
 {
 	GLfloat* points;
+	GLfloat* colours;
 	int pointsSize;
 	char* fragment_shader;
 	char* vertex_shader;
@@ -16,7 +17,8 @@ struct render_object
 struct Rendebal_Object
 {
 	GLuint shader_programme;
-	GLuint vertex_buffer_object;
+	GLuint vertex_buffer_object_points;
+	GLuint vertex_buffer_object_colours;
 	GLuint vertex_array_object;
 	int vertex_count;
 };

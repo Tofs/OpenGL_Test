@@ -51,18 +51,23 @@ void mainLoop(Rendebal_Object ro, GLFWwindow* window)
 	}
 }
 
+
 int main () {
 	assert (restart_gl_log ());
 
 	Rendebal_Object ro;
 	GLuint shader_programme;
 
-
-
 	GLfloat points[] = {
 		0.0f,	0.5f,	0.0f,
 		0.5f, -0.5f,	0.0f,
 		-0.5f, -0.5f,	0.0f
+	};
+
+	GLfloat colours[] = {
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f
 	};
 
 	std::string vs = loadFileToString("Resources/basic.vert");
@@ -72,14 +77,15 @@ int main () {
 
 	struct render_object object;
 	object.points = points;
+	object.colours = colours;
 	object.pointsSize = 9;
 
 	GLFWwindow* window;
 	window = CreateGLFWWindow(false);
-	loadVertexToGPU(&object, &ro);
 
 	shader_programme = buildShaderProgram(vertex_shader, fragment_shader);
 
+	ro.vertex_array_object = loadVertexToGPU(&object);
 	ro.shader_programme = shader_programme;
 	mainLoop(ro, window);
 	// close GL context and any other GLFW resources

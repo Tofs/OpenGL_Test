@@ -9,7 +9,8 @@ GLuint buildShaderProgram(const char* vertex_shader,const char* fragment_shader)
 
 void print_all (GLuint programme);
 
-void loadVertexToGPU(render_object *ro1, Rendebal_Object *ro2);
+//void loadVertexToGPU(render_object *ro1, Rendebal_Object *ro2);
+GLuint loadVertexToGPU(render_object *ro1);
 
 const char* GL_type_to_string(GLenum type);
 
