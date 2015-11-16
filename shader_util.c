@@ -2,6 +2,59 @@
 #include "shader_util.h"
 #include "log.h"
 
+GLuint buildShaderProgram(const char* vertex_shader,const char* fragment_shader)
+{
+	GLuint vs, fs;
+	GLuint returnProgram;
+
+	// Compile vertex shader
+	vs = glCreateShader (GL_VERTEX_SHADER);
+	glShaderSource (vs, 1, &vertex_shader, NULL);
+	glCompileShader (vs);
+
+	//Cheach for errors from vertex shader compilation
+	int params = -1;
+	glGetShaderiv(vs, GL_COMPILE_STATUS, &params);
+	if (params != GL_TRUE)
+	{
+		gl_log_err("ERROR: Vertex shader did not compile correct\n");
+		print_shader_info_log(vs,vertex_shader);
+		return -1;
+	}
+
+	//Compile fragmen shader
+	fs = glCreateShader (GL_FRAGMENT_SHADER);
+	glShaderSource (fs, 1, &fragment_shader, NULL);
+	glCompileShader (fs);
+
+	//Cheach for errors from fragment shader compilation
+	params = -1;
+	glGetShaderiv(fs, GL_COMPILE_STATUS, &params);
+	if (params != GL_TRUE)
+	{
+		gl_log_err("ERROR: Vertex shader did not compile correct\n");
+		print_shader_info_log(fs,fragment_shader);
+		return -1;
+	}
+
+	// Create one big piple from the vertex and fragment shaders.
+	returnProgram = glCreateProgram ();
+	glAttachShader (returnProgram, fs);
+	glAttachShader (returnProgram, vs);
+	glLinkProgram (returnProgram);
+
+	// check if the link process was succesfull
+	params = -1;
+	glGetProgramiv(returnProgram, GL_LINK_STATUS, &params);
+	if (params != GL_TRUE)
+	{
+			gl_log_err("ERROR: Build shader program failed\n");
+			print_programme_info_log(returnProgram);
+			return -1;
+	}
+
+	return returnProgram;
+}
 
 void print_all (GLuint programme)
 {
@@ -88,58 +141,4 @@ void print_programme_info_log(GLuint programme)
 	char log[ 2048];
 	glGetProgramInfoLog (programme, max_length, &actual_length, log);
 	gl_log(log);
-}
-
-GLuint buildShaderProgram(const char* vertex_shader,const char* fragment_shader)
-{
-	GLuint vs, fs;
-	GLuint returnProgram;
-
-	// Compile vertex shader
-	vs = glCreateShader (GL_VERTEX_SHADER);
-	glShaderSource (vs, 1, &vertex_shader, NULL);
-	glCompileShader (vs);
-
-	//Cheach for errors from vertex shader compilation
-	int params = -1;
-	glGetShaderiv(vs, GL_COMPILE_STATUS, &params);
-	if (params != GL_TRUE)
-	{
-		gl_log_err("ERROR: Vertex shader did not compile correct\n");
-		print_shader_info_log(vs,vertex_shader);
-		return -1;
-	}
-
-	//Compile fragmen shader
-	fs = glCreateShader (GL_FRAGMENT_SHADER);
-	glShaderSource (fs, 1, &fragment_shader, NULL);
-	glCompileShader (fs);
-
-	//Cheach for errors from fragment shader compilation
-	params = -1;
-	glGetShaderiv(fs, GL_COMPILE_STATUS, &params);
-	if (params != GL_TRUE)
-	{
-		gl_log_err("ERROR: Vertex shader did not compile correct\n");
-		print_shader_info_log(fs,fragment_shader);
-		return -1;
-	}
-
-	// Create one big piple from the vertex and fragment shaders.
-	returnProgram = glCreateProgram ();
-	glAttachShader (returnProgram, fs);
-	glAttachShader (returnProgram, vs);
-	glLinkProgram (returnProgram);
-
-	// check if the link process was succesfull
-	params = -1;
-	glGetProgramiv(returnProgram, GL_LINK_STATUS, &params);
-	if (params != GL_TRUE)
-	{
-			gl_log_err("ERROR: Build shader program failed\n");
-			print_programme_info_log(returnProgram);
-			return -1;
-	}
-
-	return returnProgram;
 }
